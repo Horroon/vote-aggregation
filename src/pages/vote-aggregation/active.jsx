@@ -1,5 +1,6 @@
 import { Box, CardContent, Typography } from "@mui/material";
-import { Heading2 } from "../../components";
+import { HeadingContainer } from "../../components";
+import { calculatePercentile, sumPercentile } from "../../utils/utils";
 
 const Collection = ({ percentile, name, count }) => (
   <Typography>
@@ -15,58 +16,37 @@ const Vote = ({ person }) => (
       fontWeight: "bold",
       fontSize: 16,
       borderRadius: 5,
+      marginTop: 10,
+      marginBottom: 10,
     }}
   >
     <Collection
-      name={person?.name}
-      count={person?.count}
-      percentile={person.percentile}
+      name={person?.collection}
+      count={person?.total}
+      percentile={`${sumPercentile(person)} %`}
     />
 
-    <CardContent style={{ background: "#0000004d", marginTop: 2 }}>
-      <Collection
-        name={person?.name}
-        count={person?.count}
-        percentile={person.percentile}
-      />
-    </CardContent>
-    {person?.relevantpersons.map((relativeperson) => (
-      <CardContent style={{ background: "#0000004d", marginTop: 2 }}>
+    {person?.candidates.map((candidate) => (
+      <CardContent
+        style={{ background: "#0000004d", marginTop: 2 }}
+        key={candidate.candidate + "vote"}
+      >
         <Collection
-          name={relativeperson?.name}
-          count={relativeperson?.count3}
-          percentile={relativeperson?.percentile}
+          name={candidate?.candidate}
+          count={candidate?.count}
+          percentile={`${calculatePercentile(person.total, candidate.count)} %`}
         />
       </CardContent>
     ))}
   </CardContent>
 );
 
-export const ActiveCollection = () => (
-  <Box
-    sx={{
-      height: 300,
-      backgroundColor: "primary.dark",
-    }}
-  >
-    <Heading2 title="Active Collection" />
-    <Box container margin="auto" width="70%" marginTop={4} marginBottom={4}>
-      {[
-        {
-          name: "Micle Jackin",
-          count: 3,
-          percentile: "40%",
-          relevantpersons: [
-            {
-              name: "Micle Jackson",
-              count: 10,
-              percentile: "50%",
-            },
-          ],
-        },
-      ].map((vote) => (
-        <Vote person={vote} />
+export const ActiveCollection = ({ collections = [] }) => (
+  <HeadingContainer title="Active Collection">
+    <Box container margin="auto" width="70%">
+      {collections.map((vote) => (
+        <Vote key={vote.collection + vote.count} person={vote} />
       ))}
     </Box>
-  </Box>
+  </HeadingContainer>
 );

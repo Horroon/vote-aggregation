@@ -12,19 +12,16 @@ const levenshteinDistance = (str1 = "", str2 = "") => {
     for (let i = 1; i <= str1.length; i += 1) {
       const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
       track[j][i] = Math.min(
-        track[j][i - 1] + 1, // deletion
-        track[j - 1][i] + 1, // insertion
-        track[j - 1][i - 1] + indicator // substitution
+        track[j][i - 1] + 1,
+        track[j - 1][i] + 1,
+        track[j - 1][i - 1] + indicator
       );
     }
   }
   return track[str2.length][str1.length];
 };
 
-export const fetchRawData = () =>
-  fetch(
-    "https://fiverr-project-vote-analysis.s3.us-west-2.amazonaws.com/data.json"
-  ).then((resp) => resp.json());
+export const fetchRawData = (url) => fetch(url).then((resp) => resp.json());
 
 export const formatRawData = (rawData) => {
   const formattedData = [];
@@ -33,25 +30,23 @@ export const formatRawData = (rawData) => {
   rawData.forEach((rd) => {
     rawData.forEach((rrd) => {
       if (
-        levenshteinDistance(rd.candidate, rrd.candidate) <= 4 &&
+        levenshteinDistance(rd.candidate, rrd.candidate) <= 5 &&
         !candidatesdone.includes(rrd.candidate)
       ) {
         const personIndex = formattedData.findIndex(
-          (fd) => fd.candidate === rd.candidate
+          (fd) => fd.collection === rd.candidate
         );
         if (personIndex !== -1) {
           const person = formattedData[personIndex];
           person.total = person.total + rrd.count;
-          rrd.percentile = Math.floor((rrd.count * 100) / person.total);
-          person.totalPercentile = person?.totalPercentile + rrd.percentile;
           person.candidates.push(rrd);
           candidatesdone.push(rrd.candidate);
         } else if (!candidatesdone.includes(rd.candidate)) {
           const newPerson = {
-            candidate: rd.candidate,
+            collection: rd.candidate,
             total: rd.count,
+            count: rd.count,
             candidates: [rd],
-            totalPercentile: 0,
           };
           formattedData.push(newPerson);
           candidatesdone.push(rd.candidate);
@@ -62,7 +57,40 @@ export const formatRawData = (rawData) => {
   return formattedData;
 };
 
-export const formatDataAccordingToUI = (rawData) => {
-  const formattedRawData = formatRawData(rawData);
-  const uiData = formattedRawData.map((formattedrawdata) => {});
+export const calculatePercentile = (total, count) =>
+  Math.floor((count * 100) / total);
+
+export const sumPercentile = (person) => {
+  let percentileSum = 0;
+  person.candidates.forEach((candidate) => {
+    percentileSum =
+      percentileSum + calculatePercentile(person.total, candidate.count);
+  });
+  return percentileSum;
 };
+
+export const findTotalVote = (data) => {
+  let sum = 0;
+  data.forEach((candidate) => {
+    sum = sum + candidate.total;
+  });
+  return sum;
+};
+
+export function downloadJsonFile(filename, data) {
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+export const formatExportData = (formattedData) =>
+  formattedData.map((fd) => {
+    delete fd.count;
+    return fd;
+  });

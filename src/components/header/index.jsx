@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import { useDispatch, ActionTypes } from "../../context/voteAggreationContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -43,7 +44,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("sm")]: {
-      width: "12ch",
+      width: "20ch",
       "&:focus": {
         width: "20ch",
       },
@@ -52,6 +53,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Header() {
+  const dispatch = useDispatch();
+
+  const onSearchChange = (e) =>
+    dispatch({ type: ActionTypes.UpdateFileUrl, payload: e.target.value });
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -78,8 +84,9 @@ export default function Header() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Paste file url..."
               inputProps={{ "aria-label": "search" }}
+              onChange={onSearchChange}
             />
           </Search>
         </Toolbar>
