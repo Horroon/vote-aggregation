@@ -1,4 +1,4 @@
-const levenshteinDistance = (str1 = "", str2 = "") => {
+export const levenshteinDistance = (str1 = "", str2 = "") => {
   const track = Array(str2.length + 1)
     .fill(null)
     .map(() => Array(str1.length + 1).fill(null));
@@ -58,13 +58,13 @@ export const formatRawData = (rawData) => {
 };
 
 export const calculatePercentile = (total, count) =>
-  Math.floor((count * 100) / total);
+  Math.round((count * 100) / total);
 
-export const sumPercentile = (person) => {
+export const sumPercentile = (person, totalVotes) => {
   let percentileSum = 0;
   person.candidates.forEach((candidate) => {
     percentileSum =
-      percentileSum + calculatePercentile(person.total, candidate.count);
+      percentileSum + calculatePercentile(totalVotes, candidate.count);
   });
   return percentileSum;
 };
@@ -94,3 +94,6 @@ export const formatExportData = (formattedData) =>
     delete fd.count;
     return fd;
   });
+
+export const sortByDecendingOrder = (formattedData = [], sortBy) =>
+  formattedData.sort((obj1, obj2) => (obj1[sortBy] < obj2[sortBy] ? 1 : -1));

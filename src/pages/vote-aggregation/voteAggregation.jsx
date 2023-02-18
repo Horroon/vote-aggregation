@@ -5,7 +5,12 @@ import { ActiveCollection } from "./active";
 import { InActive } from "./inactive";
 import { Statistic } from "./statistic";
 import { useRawData } from "../../hooks/useRawData";
-import { formatExportData, formatRawData } from "../../utils/utils";
+import {
+  formatExportData,
+  formatRawData,
+  findTotalVote,
+  sortByDecendingOrder,
+} from "../../utils/utils";
 import { Export } from "../../components";
 
 const Error = styled("div")(({ theme }) => ({
@@ -16,8 +21,12 @@ const Error = styled("div")(({ theme }) => ({
 
 export const VoteAggregation = () => {
   const { loading, data, fetchRawData, error, searchFileUrl } = useRawData();
-  const formattedData = formatRawData(data);
+  const formattedData = sortByDecendingOrder(formatRawData(data), "total");
   const exportData = formatExportData(formattedData);
+  const totalVotes = findTotalVote(exportData);
+
+  console.log("formattedRaw ", formattedData);
+
   return (
     <Grid container spacing={2} padding={2}>
       {error && <Error>Something went wrong</Error>}
@@ -42,10 +51,10 @@ export const VoteAggregation = () => {
         </Stack>
       </Grid>
       <Grid item sm={12} md={6}>
-        <ActiveCollection collections={formattedData} />
+        <ActiveCollection collections={formattedData} totalVotes={totalVotes} />
       </Grid>
       <Grid item sm={12} md={6}>
-        <Statistic statisticdata={formattedData} />
+        <Statistic statisticdata={formattedData} totalVotes={totalVotes} />
       </Grid>
       <Grid item sm={12} md={6}>
         <InActive />

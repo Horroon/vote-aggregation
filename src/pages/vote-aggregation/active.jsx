@@ -8,7 +8,7 @@ const Collection = ({ percentile, name, count }) => (
   </Typography>
 );
 
-const Vote = ({ person }) => (
+const Vote = ({ person, totalVotes }) => (
   <CardContent
     style={{
       background: "rgb(14 58 113)",
@@ -23,7 +23,7 @@ const Vote = ({ person }) => (
     <Collection
       name={person?.collection}
       count={person?.total}
-      percentile={`${sumPercentile(person)} %`}
+      percentile={`${sumPercentile(person, totalVotes)} %`}
     />
 
     {person?.candidates.map((candidate) => (
@@ -34,18 +34,22 @@ const Vote = ({ person }) => (
         <Collection
           name={candidate?.candidate}
           count={candidate?.count}
-          percentile={`${calculatePercentile(person.total, candidate.count)} %`}
+          percentile={`${calculatePercentile(totalVotes, candidate.count)} %`}
         />
       </CardContent>
     ))}
   </CardContent>
 );
 
-export const ActiveCollection = ({ collections = [] }) => (
+export const ActiveCollection = ({ collections = [], totalVotes = 0 }) => (
   <HeadingContainer title="Active Collection">
-    <Box container margin="auto" width="70%">
+    <Box margin="auto" width="70%">
       {collections.map((vote) => (
-        <Vote key={vote.collection + vote.count} person={vote} />
+        <Vote
+          key={vote.collection + vote.count}
+          person={vote}
+          totalVotes={totalVotes}
+        />
       ))}
     </Box>
   </HeadingContainer>
