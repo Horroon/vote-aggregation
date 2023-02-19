@@ -3,11 +3,16 @@ import { createContext, useContext } from "react";
 export const ActionTypes = {
   UpdateFileUrl: "UpdateFileUrl",
   UpdateTotalVotes: "UpdateTotalVotes",
+  AddActiveCollection: "AddActiveCollection",
+  AddInActiveCollection: "AddInActiveCollection",
+  UpdataMany: "UpdateMany",
 };
 
 export const VoteAggregateContextInitialState = {
   searchFileUrl: "",
   totalVotes: 0,
+  activeCollections: [],
+  inActiveCollections: [],
 };
 
 export const voteAggregateReducer = (state, action) => {
@@ -16,6 +21,12 @@ export const voteAggregateReducer = (state, action) => {
       return { ...state, searchFileUrl: action.payload };
     case ActionTypes.UpdateTotalVotes:
       return { ...state, totalVotes: action.payload };
+    case ActionTypes.AddActiveCollection:
+      return { ...state, activeCollections: action.payload };
+    case ActionTypes.AddInActiveCollection:
+      return { ...state, inActiveCollections: action.payload };
+    case ActionTypes.UpdataMany:
+      return { ...state, ...action.payload };
     default:
       return state;
   }
