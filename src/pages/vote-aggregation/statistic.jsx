@@ -8,7 +8,7 @@ export const Statistic = ({ statisticdata = [], totalVotes }) => (
     boxStyle={{ display: "flex", flexDirection: "column" }}
   >
     {statisticdata.length ? (
-      <Box container margin="auto" width="50%" textAlign="center" color="#fff">
+      <Box margin="auto" width="50%" textAlign="center" color="#fff">
         <Typography>Total Votes(Active): {totalVotes}</Typography>
         <CardContent
           style={{ background: "#0000004d", marginTop: 2, borderRadius: 5 }}

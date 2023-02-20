@@ -3,3 +3,5 @@ export { VoteAggregationLayout } from "./layout/layout";
 export { Heading2 } from "./heading2/heading";
 export { HeadingContainer } from "./container/container";
 export { default as Export } from "./exportbutton/exportbutton";
+export { Vote } from "./vote";
+export { Collection } from "./collection";

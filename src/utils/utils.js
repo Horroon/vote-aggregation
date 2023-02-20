@@ -42,13 +42,13 @@ export const formatRawData = (rawData) => {
           person.candidates.push(rrd);
           candidatesdone.push(rrd.candidate);
         } else if (!candidatesdone.includes(rd.candidate)) {
-          const newPerson = {
+          const newGroup = {
             collection: rd.candidate,
             total: rd.count,
             count: rd.count,
             candidates: [rd],
           };
-          formattedData.push(newPerson);
+          formattedData.push(newGroup);
           candidatesdone.push(rd.candidate);
         }
       }

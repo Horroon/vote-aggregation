@@ -5,13 +5,9 @@ import { ActiveCollection } from "./active";
 import { InActive } from "./inactive";
 import { Statistic } from "./statistic";
 import { useRawData } from "../../hooks/useRawData";
-import {
-  formatExportData,
-  formatRawData,
-  findTotalVote,
-  sortByDecendingOrder,
-} from "../../utils/utils";
-import { Export } from "../../components";
+import { formatExportData } from "../../utils/utils";
+import { Export as ExportButton } from "../../components";
+import { useVoteAggregateState } from "../../context/voteAggreationContext";
 
 const Error = styled("div")(({ theme }) => ({
   fontSize: 14,
@@ -20,13 +16,9 @@ const Error = styled("div")(({ theme }) => ({
 }));
 
 export const VoteAggregation = () => {
-  const { loading, data, fetchRawData, error, searchFileUrl } = useRawData();
-  const formattedData = sortByDecendingOrder(formatRawData(data), "total");
-  const exportData = formatExportData(formattedData);
-  const totalVotes = findTotalVote(exportData);
-
-  console.log("formattedRaw ", formattedData);
-
+  const { loading, fetchRawData, error, searchFileUrl } = useRawData();
+  const { activeCollections, totalVotes } = useVoteAggregateState();
+  const exportData = formatExportData(activeCollections);
   return (
     <Grid container spacing={2} padding={2}>
       {error && <Error>Something went wrong</Error>}
@@ -42,19 +34,19 @@ export const VoteAggregation = () => {
               ? "Import your file data"
               : "Import default file data"}
           </LoadingButton>
-          <Export
+          <ExportButton
             title="Export"
             filename="result.json"
             data={exportData}
-            disabled={!formattedData.length}
+            disabled={!activeCollections.length}
           />
         </Stack>
       </Grid>
       <Grid item sm={12} md={6}>
-        <ActiveCollection collections={formattedData} totalVotes={totalVotes} />
+        <ActiveCollection />
       </Grid>
       <Grid item sm={12} md={6}>
-        <Statistic statisticdata={formattedData} totalVotes={totalVotes} />
+        <Statistic statisticdata={activeCollections} totalVotes={totalVotes} />
       </Grid>
       <Grid item sm={12} md={6}>
         <InActive />
