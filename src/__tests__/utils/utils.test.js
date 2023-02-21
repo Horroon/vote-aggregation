@@ -5,6 +5,7 @@ import {
   calculatePercentile,
   findTotalVote,
   formatExportData,
+  removeDuplicates,
 } from "../../utils/utils";
 import { sampleRawData } from "../mockData";
 
@@ -45,5 +46,14 @@ describe("utils tests", () => {
     const exportableData = formatExportData(formattedData);
     const d1 = exportableData[0];
     expect(!d1?.count).toBe(true);
+  });
+
+  it("removes duplicates from array of object", () => {
+    const candidates = [
+      { candidate: "A", count: 2 },
+      { candidate: "A", count: 2 },
+      { candidate: "B", count: 4 },
+    ];
+    expect(removeDuplicates(candidates)).toHaveLength(2);
   });
 });

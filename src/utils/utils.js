@@ -97,3 +97,9 @@ export const formatExportData = (formattedData) =>
 
 export const sortByDecendingOrder = (formattedData = [], sortBy) =>
   formattedData.sort((obj1, obj2) => (obj1[sortBy] < obj2[sortBy] ? 1 : -1));
+
+export const removeDuplicates = (data = [], property = "candidate") =>
+  data.filter(
+    (d, index, self) =>
+      index === self.findIndex((s) => s[property] === d[property])
+  );
